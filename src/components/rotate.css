@@ -1,0 +1,16 @@
+/* Keyframes for rotation */
+@keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Rotate only the canvas, not the whole div */
+  .rotate-chart canvas {
+    display: inline-block;
+    animation: rotate 10s linear infinite;
+  }
+  
