@@ -271,13 +271,13 @@ const AuthModal = ({ show, handleClose }) => {
                   </Form.Group>
                 )}
 
-                <Button variant="primary" type="submit" className="mt-3 w-100">
-                  {isLogin ? (
-                    <span onClick={handlesignin}>{loading?<CircularProgress size="20px" style={{color:'white'}}/>:'sign in'}</span>
-                  ) : (
-                    <span onClick={handlesignup}>{loading?<CircularProgress size="20px" style={{color:'white'}}/>:'sign Up'}</span>
-                  )}
-                </Button>
+                
+                  {isLogin ? (<Button onClick={handlesignin} variant="primary" type="submit" className="mt-3 w-100">
+                    <span >{loading?<CircularProgress size="20px" style={{color:'white'}}/>:'sign in'}</span>
+                  </Button>) : (<Button onClick={handlesignup} variant="primary" type="submit" className="mt-3 w-100">
+                    <span >{loading?<CircularProgress size="20px" style={{color:'white'}}/>:'sign Up'}</span>
+                  </Button>)}
+                
                 <p className='error' style={{color:'red'}}>{erreur?erreur:''}</p>
                 <div className="mt-3 text-center">
                   <small>
