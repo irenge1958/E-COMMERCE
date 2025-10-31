@@ -47,7 +47,7 @@ const Container = styled.div`
   
   @media only screen and (max-width: 767px) {
    border-radius:10px;
-   height: 110%;
+   height: 100%;
      }
 `;
 const Image = styled.div`
