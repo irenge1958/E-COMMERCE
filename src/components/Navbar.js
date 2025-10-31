@@ -79,7 +79,7 @@ setResult(res.data)
 
           <SearchBasketWrapper>
             <SearchBar>
-              <input type='text' onChange={(e)=>{handlesearch(e.target.value)}}  placeholder='Search...' />
+              <input type='text' onChange={(e)=>{handlesearch(e.target.value)}}  placeholder='Search a product...' />
               <SearchIcon onClick={handleSearch}>
                 <SearchIconx style={{ cursor: 'pointer' }} />
               </SearchIcon>
