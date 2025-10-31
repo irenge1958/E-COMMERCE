@@ -3,7 +3,7 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 import { useState, useEffect } from "react";
 import app from '../firebase';
 import { useSelector, useDispatch } from "react-redux";
-import axios from 'axios';
+import apiclient from './apiclient'
 import { successfecth } from '../redux/userReducer';
 import { toast } from 'react-toastify';
 import { Form } from 'react-bootstrap';
@@ -62,7 +62,7 @@ const EditProfilePopup = ({ setPopx }) => {
   const handleSaveChanges = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.put(`/user/update/${currentuser._id}`, input);
+      const res = await apiclient.put(`/user/update/${currentuser._id}`, input);
       toast.success("Profile updated!");
       setPopx(false);
       dispatch(successfecth(res.data));

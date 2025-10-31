@@ -3,7 +3,7 @@ import { Table, Button, Image, Container, Modal, Form } from 'react-bootstrap';
 import ResponsiveNav from './mysecondnav';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
+import apiclient from './apiclient'
 
 const ProductList = () => {
   const [myproduct, setMyproduct] = useState([]);
@@ -17,7 +17,7 @@ const ProductList = () => {
   const [modification, setModification] = useState(false);
   useEffect(() => {
     const fecthpurchasedproduct = async () => {
-      const mypurchased = await axios.get(`/product/getpurchased/${currentuser._id}`);
+      const mypurchased = await apiclient.get(`/product/getpurchased/${currentuser._id}`);
       if (productListSegment !== 'all') {
         const mypurchasedx = mypurchased.data.filter((a) => a.state === productListSegment);
         setMyproduct(mypurchasedx);
@@ -32,7 +32,7 @@ const ProductList = () => {
     setSelectedProductId(producttitle);
 
     // Update product status
-    await axios.put(`/product/updatepurchase/${myproductId}`, { status: 'picked' });
+    await apiclient.put(`/product/updatepurchase/${myproductId}`, { status: 'picked' });
     setModification(!modification)
     // Open modal for comment
     setShowModal(true);
@@ -42,7 +42,7 @@ const ProductList = () => {
     if (!selectedProductId) return;
 
     // Post the user's comment
-    await axios.post(`/product/addcommentproduct/${selectedProductId}`, {
+    await apiclient.post(`/product/addcommentproduct/${selectedProductId}`, {
       text:comment,
       user:currentuser,
     });

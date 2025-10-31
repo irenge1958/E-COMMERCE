@@ -12,7 +12,7 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import EditIcon from '@mui/icons-material/Edit';
 import LogoutIcon from '@mui/icons-material/Logout';
 import {logout} from '../redux/userReducer'
-import axios from 'axios';
+import apiclient from './apiclient'
 import LoginIcon from '@mui/icons-material/Login';
 import EditProfilePopup from './modifuser'
 const Navbar = ({setResult1}) => {
@@ -41,13 +41,13 @@ window.addEventListener('click', handleClickOutsidex);
       return;
     }
     setKeyword(q)
-const res=await axios.get(`/product/search/${q}`)
+const res=await apiclient.get(`/product/search/${q}`)
 setResult(res.data)
   }
   const handleSearch = async () => {
     setResult([]);
     try {
-        const response = await axios.get(`/product/searchs?keyword=${keyword}`);
+        const response = await apiclient.get(`/product/searchs?keyword=${keyword}`);
         setResult1(response.data);
         navigate('/searchs')
     } catch (error) {

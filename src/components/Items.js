@@ -5,7 +5,7 @@ import { useMediaQuery } from 'react-responsive';
 import { useLocation,useNavigate } from 'react-router-dom';
 import PayPalButton from './buttonpaypal'
 import { useEffect,useState,useRef } from "react";
-import axios from 'axios'
+import apiclient from './apiclient'
 import ReceiptModal from './reciept'
 import { format } from 'timeago.js';
 import {CircularProgress} from '@mui/material'
@@ -24,7 +24,7 @@ const [receiptData, setReceiptData] = useState({});
     useEffect(() => {
         const fetchOneProduct = async () => {
           try {
-            const res = await axios.get(`/product/getoneV/${productListSegment}`);
+            const res = await apiclient.get(`/product/getoneV/${productListSegment}`);
             setProduct(res.data);
             setMyprice(res.data.price)
             setComments(res.data.comment || []);
@@ -56,7 +56,7 @@ const isMobile = useMediaQuery({ maxWidth: 760 });
     const handlePaymentSuccess =async(details) => {
      
         try {
-            await axios.post(`/product/makepurchase/${currentuser?._id}`, {
+            await apiclient.post(`/product/makepurchase/${currentuser?._id}`, {
               title: product.title,
               price: product.price,
               transactionid: details.id,
@@ -106,7 +106,7 @@ const isMobile = useMediaQuery({ maxWidth: 760 });
   
       try {
         // Assuming the API supports adding comments
-        await axios.post(`/product/addcommentproduct/${product?.title}`, commentData);
+        await apiclient.post(`/product/addcommentproduct/${product?.title}`, commentData);
         setComments((prev) => [...prev, commentData]);
         setNewComment(''); // Clear the input field
       } catch (error) {

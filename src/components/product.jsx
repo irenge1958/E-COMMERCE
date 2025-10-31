@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Table, Button, Modal, Form } from 'react-bootstrap';
-import axios from 'axios';
+import apiclient from './apiclient'
 import Upload from './uploadproduct';
 
 const InventoryTable = () => {
@@ -13,7 +13,7 @@ const InventoryTable = () => {
   useEffect(() => {
     const getInventory = async () => {
       try {
-        const getProduct = await axios.get('/product/getallpro');
+        const getProduct = await apiclient.get('/product/getallpro');
         setMyproduct(getProduct.data);
       } catch (error) {
         console.error("Error fetching product data:", error);
@@ -29,7 +29,7 @@ const InventoryTable = () => {
   const handleDelete = async (id) => {
     console.log(id)
     try {
-      await axios.delete(`/product/deleteproduct/${id}`);
+      await apiclient.delete(`/product/deleteproduct/${id}`);
       setMyproduct(myproduct.filter(product => product.id !== id));
       setModification(!modification)
     } catch (error) {
@@ -44,7 +44,7 @@ const InventoryTable = () => {
 
   const handleUpdateSave = async () => {
     try {
-      await axios.put(`/product/update/${selectedProduct._id}`, selectedProduct);
+      await apiclient.put(`/product/update/${selectedProduct._id}`, selectedProduct);
       setMyproduct(myproduct.map(p => p.id === selectedProduct._id ? selectedProduct : p));
       setShowUpdateModal(false);
       setSelectedProduct(null);

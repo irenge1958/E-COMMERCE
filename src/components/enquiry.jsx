@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import apiclient from './apiclient'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Table, Badge, Button } from 'react-bootstrap';
 
@@ -10,7 +10,7 @@ const Enquiry = () => {
     // Fetch users from backend
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('api/send-enquiry/myenquire');
+        const response = await apiclient.get('api/send-enquiry/myenquire');
         setUsers(response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -24,7 +24,7 @@ const Enquiry = () => {
   const deleteUser = async (userId) => {
     try {
    
-      await axios.put(`/api/send-enquiry/delete/${userId}`);
+      await apiclient.put(`/api/send-enquiry/delete/${userId}`);
       setUsers(users.filter((user) => user._id !== userId));
     } catch (error) {
       console.error('Error deleting user:', error);

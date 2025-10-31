@@ -5,7 +5,7 @@ import ProductList from "./productuser"
 import { useLocation,useNavigate } from 'react-router-dom';
 import {useSelector } from 'react-redux'
 import { useMediaQuery } from 'react-responsive';
-import axios from 'axios'
+import apiclient from './apiclient'
 import { useEffect,useState } from "react";
 import {CircularProgress} from '@mui/material'
 const Bodysection=()=>{
@@ -23,7 +23,7 @@ const Bodysection=()=>{
   useEffect(() => {
     const fetchMyProduct = async () => {
       try {
-        const myProducts = await axios.get(`/product/random`);
+        const myProducts = await apiclient.get(`/product/random`);
         if(itemss){
           SetAllproduct(myProducts.data.filter((x)=>x.category===itemss))
         }else{

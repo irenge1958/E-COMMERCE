@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Table, Modal, Form } from 'react-bootstrap';
-import axios from 'axios';
+import apiclient from './apiclient'
 
 const AdminOrderTable = () => {
   const [allproducts, setAllproducts] = useState([]);
@@ -12,14 +12,14 @@ const AdminOrderTable = () => {
 
   useEffect(() => {
     const fetchPurchasedProduct = async () => {
-      const product = await axios.get(`/product/purchasedproduct`);
+      const product = await apiclient.get(`/product/purchasedproduct`);
       setAllproducts(product.data);
     };
     fetchPurchasedProduct();
   }, [modification]);
 
   const deleteProduct = async (id) => {
-    await axios.put(`/product/deletepurchase/${id}`);
+    await apiclient.put(`/product/deletepurchase/${id}`);
     setModification(!modification);
   };
 
@@ -29,7 +29,7 @@ const AdminOrderTable = () => {
   };
 
   const handleStatusChange = async () => {
-    await axios.put(`/product/updatepurchase/${selectedProductId}`, { status: newStatus });
+    await apiclient.put(`/product/updatepurchase/${selectedProductId}`, { status: newStatus });
     setShowModal(false);
     setModification(!modification);
   };

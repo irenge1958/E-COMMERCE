@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import apiclient from './apiclient'
 import styled from 'styled-components';
 
 const Overlay = styled.div`
@@ -112,7 +112,7 @@ const EnquiryPop = ({ show, onClose }) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/api/send-enquiry/inquire', {
+      const response = await apiclient.post('/api/send-enquiry/inquire', {
         userEmail,
         message,
       });

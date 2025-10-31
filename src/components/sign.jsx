@@ -1,16 +1,17 @@
 import React, { useState, useRef } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import axios from 'axios';
+import apiclient from './apiclient'
 import { useNavigate } from "react-router-dom";
-import { successfecth, startfecth } from '../redux/userReducer';
+import { successfecth, startfecth,failurefecth } from '../redux/userReducer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { auth, provider } from '../firebase';
 import { signInWithPopup } from "firebase/auth";
-
+import {CircularProgress} from '@mui/material'
 const AuthModal = ({ show, handleClose }) => {
   const navigateTo = useNavigate();
   const dispatch = useDispatch();
+  const [erreur,setErreur]=useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [locationx, setLocationx] = useState({ country: "", state: "", street: "" });
   const [isLogin, setIsLogin] = useState(true);
@@ -21,30 +22,37 @@ const AuthModal = ({ show, handleClose }) => {
   const state = useRef();
   const streetAddress = useRef();
   const confirmPassword = useRef();
+  const { loading } = useSelector((state) => state.user);
+  console.log(loading)
+ 
   const toggleAuthMode = () => setIsLogin(!isLogin);
 
   const handlesignin = async (e) => {
     e.preventDefault();
     dispatch(startfecth());
     try {
-      const response = await axios.post('/auth/signin', {
+      const response = await apiclient.post('/auth/signin', {
         email: email.current.value,
         password: password.current.value
       });
       dispatch(successfecth(response.data.user));
-      navigateTo('/');
+     
       handleClose();
     } catch (error) {
-      console.error('Error signing in:', error);
+      setErreur(error.response.data.message)
+      dispatch(failurefecth());
+      console.log('Error signing in:', error);
     }
   };
 
   const handlesignup = async (e) => {
     e.preventDefault();
+    dispatch(startfecth());
     const passwordValue = password.current.value.trim();
     const confirmPasswordValue = confirmPassword.current.value.trim();
 
     if (passwordValue !== confirmPasswordValue) {
+      dispatch(failurefecth());
       alert("Passwords do not match. Please try again.");
       return;
     }
@@ -55,12 +63,13 @@ const AuthModal = ({ show, handleClose }) => {
     const filledFields = [passwordValue, email.current.value.trim(), name.current.value.trim(), countryValue, stateValue, streetValue].filter((value) => value !== "");
 
     if (filledFields.length < 6) {
+      dispatch(failurefecth());
       alert("Please fill all fields.");
       return;
     }
 
     try {
-      const createuser = await axios.post('/auth/signup', {
+      const createuser = await apiclient.post('/auth/signup', {
         password: passwordValue,
         email: email.current.value,
         name: name.current.value,
@@ -71,14 +80,17 @@ const AuthModal = ({ show, handleClose }) => {
         },
       });
       dispatch(successfecth(createuser.data.user));
-      navigateTo('/');
+
       handleClose();
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      dispatch(failurefecth());
+      setErreur(error.response.data.message)
+      console.log(error);
     }
   };
 
   const handleGoogleSignIn = () => {
+    dispatch(startfecth());
     setIsModalOpen(true);
   };
 
@@ -87,16 +99,18 @@ const AuthModal = ({ show, handleClose }) => {
     signInWithPopup(auth, provider)
       .then(async (result) => {
         try {
-          const response = await axios.post('/auth/signinwithgoogle', {
+          const response = await apiclient.post('/auth/signinwithgoogle', {
             email: result.user.email,
             img: result.user.photoURL,
             username: result.user.displayName,
             location: locationx
           });
           dispatch(successfecth(response.data.user));
-          navigateTo('/');
+    
           handleClose();
         } catch (err) {
+          dispatch(failurefecth());
+          setErreur(err)
           console.error(err);
         }
       })
@@ -259,12 +273,12 @@ const AuthModal = ({ show, handleClose }) => {
 
                 <Button variant="primary" type="submit" className="mt-3 w-100">
                   {isLogin ? (
-                    <span onClick={handlesignin}>Sign In</span>
+                    <span onClick={handlesignin}>{loading?<CircularProgress size="20px" style={{color:'white'}}/>:'sign in'}</span>
                   ) : (
-                    <span onClick={handlesignup}>Sign Up</span>
+                    <span onClick={handlesignup}>{loading?<CircularProgress size="20px" style={{color:'white'}}/>:'sign Up'}</span>
                   )}
                 </Button>
-
+                <p className='error' style={{color:'red'}}>{erreur?erreur:''}</p>
                 <div className="mt-3 text-center">
                   <small>
                     {isLogin

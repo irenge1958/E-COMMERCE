@@ -3,9 +3,10 @@ import {useSelector,useDispatch} from 'react-redux';
 import {deleteProductin} from '../redux/commentreducer'
 import {emptybasket} from '../redux/commentreducer'
 import PayPalButton from './buttonpaypal'
-import axios from 'axios'
+import apiclient from './apiclient'
 import ReceiptModal from './reciept'
 import { useNavigate } from 'react-router-dom';
+import AuthModal from './sign';
 // import ReceiptModal from './reciept'
 const Baskets = () => {
     const navigateto=useNavigate()
@@ -15,7 +16,7 @@ const Baskets = () => {
     const [showReceipt, setShowReceipt] = useState(false);
     const [receiptData, setReceiptData] = useState({});
     const [products, setProducts] = useState(currentcomment);
-
+    const [show, setShow] = useState(false);
     const updateQuantity = (id, delta) => {
         setProducts((prevProducts) =>
             prevProducts.map((product) =>
@@ -30,14 +31,26 @@ const Baskets = () => {
         setProducts((prevProducts) => prevProducts.filter((product) => product.id !== id));
         dispatch(deleteProductin(id))
     };
+    const signnin = () => {
+        if (!currentuser) {
+          const confirmLogin = window.confirm('You must log in first. Do you want to log in?');
+          if (confirmLogin) {
+            setShow(true); // open your login modal
+          } else {
+            alert('Action cancelled.');
+          }
+          return;
+        }
+      };
+      
    const handlePaymentSuccess=async(details)=>{
  console.log(details)
- 
+
  try {
     await Promise.all(
       products.map(async (x) => {
         try {
-          await axios.post(`/product/makepurchase/${currentuser._id}`, {
+          await apiclient.post(`/product/makepurchase/${currentuser._id}`, {
             title: x.title,
             price: x.price,
             transactionid: details.id,
@@ -170,6 +183,7 @@ const handleClose=async()=>{
         receiptData={receiptData}
       />
             <h1>Your Basket</h1>
+            <AuthModal show={show} handleClose={() => setShow(false)} />
             {products.length===0?<div>No product in your basket</div>:products.map((product) => (
                 <div key={product.id} style={styles.basketItem}>
                     <div style={styles.productDetails}>
@@ -196,7 +210,19 @@ const handleClose=async()=>{
             ))}
             <hr />
             <h2 style={styles.total}>Total: ${totalPrice.toFixed(2)}</h2>
-            {totalPrice.toFixed(2) && <PayPalButton amount={totalPrice.toFixed(2)} onSuccess={handlePaymentSuccess} />}  
+            {!currentuser ? (
+  <button onClick={signnin} className="btn btn-primary">
+    Log in to pay
+  </button>
+) : (
+  totalPrice > 0 && (
+    <PayPalButton
+      amount={totalPrice.toFixed(2)}
+      onSuccess={handlePaymentSuccess}
+    />
+  )
+)}
+
         </div>
     );
 };

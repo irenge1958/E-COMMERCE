@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useEffect, useState } from "react";
 import app from '../firebase';
-import axios from 'axios';
+import apiclient from './apiclient'
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
@@ -63,7 +63,7 @@ const Upload = ({ setpop }) => {
     const handleAddVideo = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('/product/createproduct', {
+            const response = await apiclient.post('/product/createproduct', {
                 pic: input.MyUrlimg,
                 producturl: input.MyUrlvideo,
                 title: input.title,
