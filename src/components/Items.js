@@ -213,7 +213,7 @@ const isMobile = useMediaQuery({ maxWidth: 760 });
     ))
   ) : (
     <p style={{ color: '#777', fontSize: '16px', marginTop: '10px' }}>
-      No comments yet. Be the first to comment!
+      No comments yet. Be the first to comment but sign in first!
     </p>
   )}
 
